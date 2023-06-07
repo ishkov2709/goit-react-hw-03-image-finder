@@ -1,6 +1,7 @@
 import { Img, ModalBox, Overlay } from './Modal.styled';
 import { Component } from 'react';
 import { createPortal } from 'react-dom';
+import PropTypes from 'prop-types';
 
 const modalRoot = document.querySelector('#modal-root');
 
@@ -37,3 +38,9 @@ class Modal extends Component {
 }
 
 export default Modal;
+
+Modal.propTypes = {
+  url: PropTypes.string,
+  value: PropTypes.string,
+  reset: PropTypes.func,
+};

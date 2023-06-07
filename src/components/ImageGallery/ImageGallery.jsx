@@ -1,5 +1,6 @@
 import { List } from './ImageGallery.styled';
 import ImageGalleryItem from '../ImageGalleryItem';
+import PropTypes from 'prop-types';
 
 const ImageGallery = ({ gallery, value, onClick }) => {
   return (
@@ -18,3 +19,9 @@ const ImageGallery = ({ gallery, value, onClick }) => {
 };
 
 export default ImageGallery;
+
+ImageGallery.propTypes = {
+  gallery: PropTypes.arrayOf(PropTypes.object),
+  value: PropTypes.string,
+  onClick: PropTypes.func,
+};
