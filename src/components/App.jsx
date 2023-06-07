@@ -49,6 +49,7 @@ export class App extends Component {
             status: 'resolved',
           };
         });
+
         if (!hits.length) {
           throw new Error();
         }
