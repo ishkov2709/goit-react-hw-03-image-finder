@@ -10,7 +10,7 @@ import {
 
 const Searchbar = ({ onSubmit }) => {
   const handleSumbit = ({ search }, actions) => {
-    onSubmit(search);
+    onSubmit(search.toLowerCase());
 
     actions.resetForm();
   };

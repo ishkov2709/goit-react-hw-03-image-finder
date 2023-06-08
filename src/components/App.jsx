@@ -14,39 +14,24 @@ export class App extends Component {
     status: 'idle',
     showModal: false,
     url: '',
+    showBtn: false,
   };
 
   async componentDidUpdate(prevProps, prevState) {
     const { page, value } = this.state;
 
-    if (prevState.value !== value) {
+    if (prevState.value !== value || prevState.page !== page) {
       this.setState({ status: 'panding' });
       try {
         const {
-          data: { hits },
-        } = await fetchImages(page, value);
-
-        this.setState({ gallery: hits, status: 'resolved' });
-
-        if (!hits.length) {
-          throw new Error();
-        }
-      } catch {
-        this.setState({ status: 'rejected' });
-      }
-    }
-
-    if (prevState.value === value && prevState.page < page) {
-      this.setState({ status: 'panding' });
-      try {
-        const {
-          data: { hits },
+          data: { totalHits, hits },
         } = await fetchImages(page, value);
 
         this.setState(prevState => {
           return {
             gallery: [...prevState.gallery, ...hits],
             status: 'resolved',
+            showBtn: page < Math.ceil(totalHits / 12),
           };
         });
 
@@ -59,17 +44,22 @@ export class App extends Component {
     }
   }
 
+  handleUpdateValue = currentValue => {
+    const prevValue = this.state.value;
+    if (prevValue !== currentValue && currentValue.trim()) {
+      return this.setState({
+        value: currentValue,
+        page: 1,
+        gallery: [],
+      });
+    }
+    return;
+  };
+
   handleIncrementPage = () => {
     this.setState(prevState => {
       return { page: prevState.page + 1 };
     });
-  };
-
-  handleUpdateValue = value => {
-    if (!value.trim()) {
-      return this.setState({ status: 'rejected' });
-    }
-    this.setState({ value, page: 1 });
   };
 
   handleUpdateImg = (url = '') => {
@@ -79,7 +69,7 @@ export class App extends Component {
   };
 
   render() {
-    const { gallery, value, status, showModal, url } = this.state;
+    const { gallery, value, status, showModal, url, showBtn } = this.state;
     return (
       <div
         style={{
@@ -99,7 +89,7 @@ export class App extends Component {
 
         {status === 'panding' && <Loading />}
 
-        {status === 'resolved' && (
+        {status === 'resolved' && showBtn && (
           <Button title="Load more" onClick={this.handleIncrementPage}></Button>
         )}
 
